@@ -31,15 +31,62 @@
       <h2>Notes</h2>
       <textarea id="note-input" placeholder="Write a note..."></textarea>
       <button id="save-note-btn">Save Note</button>
+      <button id="clear-all-btn">Clear All</button>
       <ul id="note-list"></ul>
     </section>
 
-    <section id="weather">
+   <section id="weather">
       <h2>Weather</h2>
       <div id="weather-info">
-        <!-- Weather details will appear here -->
+          <!-- Weather details will appear here -->
+          <div class="container">
+            <input type="text" id="locationInput" placeholder="Enter a city">
+            <button id="searchButton">Search</button>
+            <div class="weather-info">
+                <h2 id="location"></h2>
+                <p id="temperature"></p>
+                <p id="description"></p>
+                <p id="precipitation"></p>
+                <p id="cloudy"></p>
+            </div>
+        </div>
+    
+        <script>
+            document.getElementById('searchButton').addEventListener('click', function() {
+                const city = document.getElementById('locationInput').value;
+                const apiKey = 'ce6c7d905229fa2fd6792e99ff6b322a'; 
+                const apiUrl = `https://api.openweathermap.org/data/2.5/weather?q=${city}&appid=${apiKey}&units=metric`;
+                
+                fetch(apiUrl)
+                    .then(response => response.json())
+                    .then(data => {
+                        console.log(data); // Log the entire response object
+                        if (data.cod === 200) { // Check if the response is successful
+                            document.getElementById('location').textContent =` Weather in ${data.name}`;
+                            document.getElementById('temperature').textContent = `Temperature: ${data.main.temp}°C`;
+                            document.getElementById('description').textContent = `Description: ${data.weather[0].description}`;
+    
+                            // Check for precipitation
+                            const rain = data.rain ? data.rain['1h'] : 0; // Get rain in the last hour if available
+                            document.getElementById('precipitation').textContent =` Precipitation (last hour): ${rain ? rain + ' mm' : 'No rain'}`;
+    
+                            // Check if the weather is cloudy
+                            const isCloudy = data.weather.some(weather => weather.description.includes('cloud'));
+                            document.getElementById('cloudy').textContent = isCloudy ? 'It is cloudy.' : 'It is not cloudy.';
+                        } else {
+                            document.getElementById('location').textContent = 'City not found';
+                            document.getElementById('temperature').textContent = '';
+                            document.getElementById('description').textContent = '';
+                            document.getElementById('precipitation').textContent = '';
+                            document.getElementById('cloudy').textContent = '';
+                        }
+                    })
+                    .catch(error => console.error('Error fetching weather data:', error));
+            });
+        </script>
       </div>
-    </section>
+  </section>
+  
 
     <section id="goals">
       <h2>Goals</h2>

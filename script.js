@@ -32,4 +32,3 @@ document.getElementById('add-task-btn').addEventListener('click', function() {
   });
   
   // You can later add functionality for fetching weather from an API, etc.
-  
